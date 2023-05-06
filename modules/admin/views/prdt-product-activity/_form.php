@@ -37,7 +37,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'status')->dropDownList(
        [
-        1 => 'Sold', 0 =>'Order'
+        1 => 'Sold', 2 =>'Order'
        ],
        [
             'prompt' => 'Choose action',

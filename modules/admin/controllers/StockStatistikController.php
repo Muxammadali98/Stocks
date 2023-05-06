@@ -28,6 +28,8 @@ class StockStatistikController extends Controller
         $category=\Yii::$app->request->get('category');
         $stock=\Yii::$app->request->get('stock');
         $action=\Yii::$app->request->get('action');
+        $from=\Yii::$app->request->get('from');
+        $to=\Yii::$app->request->get('to');
 
         $activity  = PrdtProductActivity::find();
         $products = PrdtProduct::find();
@@ -39,23 +41,35 @@ class StockStatistikController extends Controller
             $data = $activity->select('prdt_product_id')->distinct('prdt_product_id')->column();
 
         }
-        if(!is_null($category)){
-         
-            $products = $products->where(['prdt_category_id'=>$category]);
+    
+        if(!empty($category)){
+          
+            $products = $products->andWhere(['prdt_category_id'=>$category]);
         }
 
         if(!is_null($stock) and !empty($stock) ){
-            $products = $products->where(['core_stock_id'=>$stock]);
+          
+            $products = $products->andWhere(['core_stock_id'=>$stock]);
         }
         if(!empty($data)){
-            $products = $products->where(['in','id',$data]);
+            $products = $products->andWhere(['in','id',$data]);
         }
 
+        if( $from !== null and $from !== '' ){
+          
+            $products = $products->andWhere(['between','created_at',$from, date('Y-m-d H:i:s')]);
 
+        }
+        if( $to !== null and $to !== '' ){
+         
+            $products = $products->andWhere(['between','created_at',0, $to]);
 
+        }
+        
         $products = $products->all();
+     
 
-        $orderProduct = PrdtProductActivity::find()->andWhere(['in','status',0])->andWhere(['between','created_at',date('Y-m-d '), date('Y-m-d H:i:s')])->all();
+        $orderProduct = PrdtProductActivity::find()->andWhere(['in','status',2])->andWhere(['between','created_at',date('Y-m-d '), date('Y-m-d H:i:s')])->all();
         $saleProduct = PrdtProductActivity::find()->andWhere(['in','status',1])->andWhere(['between','created_at',date('Y-m-d '), date('Y-m-d H:i:s')])->with('prdtProduct')->all();
         $categores = PrdtCategory::find()->all();
         $coreStocks = CoreStock::find()->all();
@@ -84,17 +98,30 @@ class StockStatistikController extends Controller
             ]);
         }
     }
-    public function actionFilter($id=0)
-    {     
-        $from = $_POST;
-        return var_dump($from,$id);
-        $products = PrdtProduct::find()->andWhere(['in','prdt_category_id',])->andWhere(['in','artikul',$id])->all();
-       
-     
-        $inStock = PrdtProduct::find()->where(['in','artikul',0])->all();
-        $saleProduct = PrdtProduct::find()->where(['in','artikul',1])->all();
-        $categores = PrdtCategory::find()->all();
-        return $this->render('index', compact('products', 'inStock','saleProduct', 'categores'));
+
+    public function actionCreate()
+    {
+
+        return $this->redirect('/admin/stock-statistik/index');
     }
+
+    public function actionEdit()
+    {
+        $get=\Yii::$app->request->get();
+
+        if(empty($get['ids']) or $get['change'] == 'Discount'){
+            $categores = PrdtCategory::find()->all();
+
+            return $this->render('edit', compact('categores'));
+
+        }else{
+            $products = PrdtProduct::findAll($get['ids']);
+            
+            return $this->render('edit', compact('products'));
+        }
+
+    }
+
+
 
 }

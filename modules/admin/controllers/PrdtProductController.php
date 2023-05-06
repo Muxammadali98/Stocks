@@ -95,6 +95,29 @@ class PrdtProductController extends Controller
         ]);
     }
 
+    public function actionChange()
+    {
+        $data = \Yii::$app->request->get();
+        if(!empty($data['ids'])){
+            foreach($data['ids'] as $id){
+                $model = $this->findModel($id);
+             
+                $model->price = $data[$model->id];
+                $model->save();
+            }
+            return $this->redirect('/admin/stock-statistik/index');
+        }else{
+            $producs = PrdtProduct::find()->where(['prdt_category_id'=>$data['category_id']])->all();
+            foreach($producs as $produc){
+                $dicount =  $produc->price /100 * $data['discount'];
+                $produc->price = $produc->price - $dicount;
+                $produc->discount = $dicount;
+                $produc->save();
+            }
+            return $this->redirect('/admin/stock-statistik/index');
+        }
+    }
+
     /**
      * Deletes an existing PrdtProduct model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
