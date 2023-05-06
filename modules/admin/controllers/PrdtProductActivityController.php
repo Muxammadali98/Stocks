@@ -2,6 +2,7 @@
 
 namespace app\modules\admin\controllers;
 
+use app\modules\admin\models\PrdtProduct;
 use Yii;
 use app\modules\admin\models\PrdtProductActivity;
 use yii\data\ActiveDataProvider;
@@ -67,7 +68,11 @@ class PrdtProductActivityController extends Controller
         $model = new PrdtProductActivity();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            // $product = Prdt
+          
+            $product = PrdtProduct::find()->where(['id'=>$model->prdt_product_id])->one();
+            $product->count = $product->count - $model->count;
+            $product->save();
+            
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
