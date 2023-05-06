@@ -83,9 +83,9 @@ $config = [
         'class' => 'mdm\admin\components\AccessControl',
         'allowActions' => [
             'site/*',
-            'roles/*',
-            'gii/*',
-            'admin/*',
+            // 'roles/*',
+            // 'gii/*',
+            // 'admin/*',
             'debug/*',
             'elfinder/*',
         ]

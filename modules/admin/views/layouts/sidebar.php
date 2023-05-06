@@ -15,6 +15,7 @@ use app\modules\admin\widgets\Menu;
         <!-- Sidebar navigation-->
         <nav class="sidebar-nav">
             <?php
+
             try {
                 echo Menu::widget([
                     'options' => [ 'id' => 'sidebarnav' ],
@@ -32,9 +33,30 @@ use app\modules\admin\widgets\Menu;
                         ],
                         [
                             'label' => 'Dashboard',
-                            'url' => ['default/index'],
+                            'url' => ['stock-statistik/index'],
                             'icon' => '<i class="fa fa-tachometer"></i>',
                         ],
+                        [
+                            'label' => 'Core Stock',
+                            'url' => ['core-stock/index'],
+                        ],
+                        [
+                            'label' => 'Prdt Brand',
+                            'url' => ['prdt-brand/index'],
+                        ],
+                        [
+                            'label' => 'Prdt Category',
+                            'url' => ['prdt-category/index'],
+                        ],
+                        [
+                            'label' => 'Prdt Product',
+                            'url' => ['prdt-product/index'],
+                        ],
+                        [
+                            'label' => 'Prdt Product Activity',
+                            'url' => ['prdt-product-activity/index'],
+                        ],
+                
                     ]
                 ]);
             } catch ( Exception $e ) {
